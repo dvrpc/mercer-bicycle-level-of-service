@@ -3,4 +3,4 @@ This site is intended to be a resource for Mercer County residents and bicyclist
 
 Original repo can be found [here](https://github.com/gudrick-fred/MercerBLOS). 
 
-![](../img/MercerBLOS.png)
+![](/img/MercerBLOS.png)
