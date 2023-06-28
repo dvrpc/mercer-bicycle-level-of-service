@@ -4,3 +4,12 @@ This site is intended to be a resource for Mercer County residents and bicyclist
 Original repo can be found [here](https://github.com/gudrick-fred/MercerBLOS). 
 
 ![](/img/MercerBLOS.png)
+
+## JS library dependencies
+- [Google Maps JavaScript API](https://developers.google.com/maps/documentation/javascript/overview)
+- [bootstrap (3.0.0)](https://getbootstrap.com)
+- [jquery (1.10.2)](https://api.jquery.com/)
+- [numeral.js](http://numeraljs.com/)
+
+## Geospatial Data dependencies
+datasets are static GeoJson files located within the "Data" folder
