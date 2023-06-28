@@ -1,0 +1,433 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <title>Mercer County Bikeability Map</title>
+
+    <!-- Core CSS -->
+    <link href="http://netdna.bootstrapcdn.com/bootstrap/3.0.0/css/bootstrap.min.css" rel="stylesheet" type="text/css">
+    <link href="http://netdna.bootstrapcdn.com/font-awesome/3.2.1/css/font-awesome.min.css" rel="stylesheet" type="text/css">
+    <link href="css/typeahead.js-bootstrap.css" rel="stylesheet" type="text/css"> <!--https://github.com/jharding/typeahead.js-bootstrap.css-->
+    <link href="http://cdn.leafletjs.com/leaflet-0.6.4/leaflet.css" rel="stylesheet" type="text/css">
+    <link href="css/style.css" rel="stylesheet" type="text/css">
+    
+    <!--[if lte IE 8]>
+        <link href="http://cdn.leafletjs.com/leaflet-0.6.4/leaflet.ie.css" rel="stylesheet" type="text/css">
+        <link href="http://netdna.bootstrapcdn.com/font-awesome/3.2.1/css/font-awesome-ie7.min.css" rel="stylesheet">
+    <![endif]-->
+
+    <!-- Custom styles for this template -->
+    
+
+    <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!--[if lt IE 9]>
+        <script src="//cdnjs.cloudflare.com/ajax/libs/html5shiv/3.6.2/html5shiv.js"></script>
+        <script src="//cdnjs.cloudflare.com/ajax/libs/respond.js/1.2.0/respond.js"></script>
+    <![endif]-->
+      
+    <style>
+        @font-face {
+            font-family: Oswald;
+            src: url(fonts/Oswald-Regular.ttf);
+            font-weight: normal;            
+        }
+        @font-face {
+            font-family: Oswald;
+            src: url(fonts/Oswald-Bold.ttf);
+            font-weight: bold;
+        }
+        @font-face {
+            font-family: Oswald;
+            src: url(fonts/Oswald-RegularItalic.ttf);
+            font-style: italic;
+            font-weight: normal;
+        }
+        * {
+            font-family: 'Oswald';
+        }
+    </style>
+  
+  </head>
+
+  <body>
+
+    <div class="navbar navbar-inverse navbar-fixed-top">
+        <div class="navbar-header">
+            <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+			<span>	
+                <a  href="http://www.dvrpc.org" target="_new"><img class="pull-left" style="margin:10px 0px 0px 15px" src="img/dvrpc_logo_small.png"/></a> 
+                <img class="pull-left" style="margin:10px 0px 0px 20px; width:30px; height:30px;" src="img/mercerlogo.png"/>
+                <a class="navbar-brand" href="#">Mercer County Bikeability Map</a> 
+			</span> 
+        </div>
+        <div class="navbar-collapse collapse">
+            <ul class="nav navbar-nav navbar-right">
+                <li>
+                    <a id="toolsDrop" href="#" role="button" class="dropdown-toggle" data-toggle="collapse" data-target=".navbar-collapse.in" onclick="$('#aboutModal').modal('show'); return false;" style="background-color:rgb(0,120,174);"><i class="glyphicon glyphicon-info-sign" style="color: white"></i>&nbsp;&nbsp;About</a>
+                </li>
+                
+                <li>
+                    <a id="toolsDrop" href="#" role="button" class="dropdown-toggle" data-toggle="collapse" data-target=".navbar-collapse.in" onclick="$('#legendModal').modal('show'); return false;" style="background-color:rgb(0,120,174);"><i class="icon-picture" style="color:white;"></i>&nbsp;&nbsp;Legend</a>
+                </li>
+                
+                <li class="dropdown">    
+                    <a id="toolsDrop" href="#" role="button" class="dropdown-toggle" data-toggle="dropdown" style="background-color:rgb(0,120,174)"><i class="glyphicon glyphicon-wrench" style="color: white"></i>&nbsp;&nbsp;Tools and Data <b class="caret"></b></a>
+                    <ul class="dropdown-menu">
+				        <li id="zoomToRegion"><a href="javascript:void(0);"><i class="icon-fullscreen"></i>&nbsp;&nbsp;Zoom To Full Extent</a></li>
+                        <li class="divider"></li>
+                            <li><a href="#" onclick="$('#aboutDownload').modal('show'); return false;"><i class="glyphicon glyphicon-download-alt"></i>&nbsp;&nbsp;Download Data</a>
+                            </li>
+                  <!--       <li><a href="#" onclick="$('#legendModal').modal('show'); return false;"><i class="icon-picture"></i>&nbsp;&nbsp;Show Legend</a></li> -->
+                    </ul>
+                </li>
+                <li><a id="dropdown" href="#" role="button" class="dropdown-toggle" data-toggle="dropdown" style="background-color: rgb(0,120,174)"><i class="glyphicon glyphicon-globe" style="color:white"></i>&nbsp;&nbsp;Zoom to<b class="caret"></b></a>
+                    <ul class="dropdown-menu">
+                        <li id="zoomToStudy1"><a href="javascript:void(0);">&nbsp;&nbsp; East Windsor</a></li>
+                        <li id="zoomToStudy2"><a href="javascript:void(0);">&nbsp;&nbsp; Ewing Township</a></li>
+                        <li id="zoomToStudy3"><a href="javascript:void(0);">&nbsp;&nbsp; Hamilton Township</a></li>
+                        <li id="zoomToStudy4"><a href="javascript:void(0);">&nbsp;&nbsp; Hightstown Borough</a></li>
+                        <li id="zoomToStudy5"><a href="javascript:void(0);">&nbsp;&nbsp; Hopewell Borough</a></li>
+                        <li id="zoomToStudy6"><a href="javascript:void(0);">&nbsp;&nbsp; Hopewell Township</a></li>
+                        <li id="zoomToStudy7"><a href="javascript:void(0);">&nbsp;&nbsp; Lawrence Township</a></li>
+                        <li id="zoomToStudy8"><a href="javascript:void(0);">&nbsp;&nbsp; Pennington Borough</a></li>
+                        <li id="zoomToStudy9"><a href="javascript:void(0);">&nbsp;&nbsp; Princeton</a></li>
+                        <li id="zoomToStudy10"><a href="javascript:void(0);">&nbsp;&nbsp; Robbinsville Township</a></li>
+                        <li id="zoomToStudy11"><a href="javascript:void(0);">&nbsp;&nbsp; Trenton City</a></li>
+                        <li id="zoomToStudy12"><a href="javascript:void(0);">&nbsp;&nbsp; West Windsor Township</a></li>
+                    </ul>
+                </li>
+            </ul>
+        </div><!--/.navbar-collapse -->
+    </div>
+      
+    <div class="row" id="container">
+        <div id="info-bar">
+            <b>Information</b><em> (click road)</em>
+        </div>
+        <div class="col-sm-8 col-md-10 col-lg-10" id="map">
+    	    <div id='title'></div>	
+            <div id="loading" style="display: block;">
+                <div class="loading-indicator">
+                    <div class="progress progress-striped active">
+                        <div class="progress-bar progress-bar-info" style="width: 100%"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="col-sm-4 col-md-2 col-lg-2" id="sidebar" style="padding: 10px; overflow: auto;">
+    		<div class="panel panel-primary">
+    			<div class="panel-heading" >
+    			   <span class="small text-muted" style="color:white"><strong>Data Layers</strong></span>
+                </div>	
+				<div id="overlay-layers" class="panel-collapse collapse in">
+	                <div class="panel-body" style="padding: 0px 15px;">  									  	
+	                    <h3 style="color:#0078ae;">Bikeability Scores</h3>
+                        <div id="majorRoads" style="float: left">
+                            <b>Major Roads</b><br>
+
+                            <div class="checkbox">
+                                <label>
+                                    <input id="Excellent" type="checkbox"  onClick="toggleLayer(data4,'Excellent')" checked>
+                                    <img src='img/excellent.png' width='40' height='8'> &nbsp;Excellent
+                                </label>
+                            </div>   	
+
+                            <div class="checkbox">
+                                <label>
+                                    <input id="Fair" type="checkbox"  onClick="toggleLayer(data5,'Fair')" checked>
+                                    <img src='img/fair.png' width='40' height='8'> &nbsp;Fair
+                                </label>
+                            </div>   	
+
+                            <div class="checkbox">
+                                <label>
+                                    <input id="UnFav" type="checkbox"  onClick="toggleLayer(data6,'UnFav')" >
+                                    <img src='img/unsafe.png' width='40' height='8'> &nbsp;Unfavorable
+                                </label>
+                            </div>   
+
+                            <div class="checkbox">
+                                <label>
+                                    <input id="UnBike" type="checkbox"  onClick="toggleLayer(data7,'UnBike')" >
+                                    <img src='img/unbikeable.png' width='40' height='8'> &nbsp;Unbikeable
+                                </label>
+                            </div> 
+                        </div>
+                        
+                        <div id="minorRoads" style="clear:left;">
+                            <b>Minor Roads</b><br>
+
+                            <div class="checkbox">
+                                <label>
+                                    <input id="Fav" type="checkbox" onClick="toggleLayer(data8,'Fav')" >
+                                    <img src='img/localAx.png' width='40' height='8'> &nbsp;Favorable
+                                </label>
+                            </div> 
+                
+                            <div class="checkbox">
+                                <label>
+                                    <input id="Min_UnFav" type="checkbox" onClick="toggleLayer(data9,'Min_UnFav')" >
+                                    <img src='img/localD.png' width='40' height='8'> &nbsp;Unfavorable
+                                </label>
+                            </div>
+                        </div>
+
+                        <h3 style="color:#0078ae;">Layers</h3>
+                         <div class="checkbox">
+                            <label>
+                                <input id="roadway" type="checkbox"  onClick="toggleLayer(data1,'roadway')" checked>
+                                <img src='img/Trails.png'width='40' height='8' >&nbsp;Bikeable Trails
+                            </label>
+                        </div> 
+                        <div id="poi">
+                            <b>Points of Interest</b>
+                            <div class="checkbox"><label><input id="rail" type="checkbox"  onClick="toggleLayer(data2,'rail')" checked><img src='img/railstation.png' width='24' height='24'> &nbsp;Rail Stations</label>
+                            </div> 
+                            <div class="checkbox"><label><input type="checkbox" class="layer" name="overLayers" id="business" data-id="Business/Office Park" data-layer="data3"><img src='img/office.png' width='24' height='24'>&nbsp;&nbsp;Business Center</label></div>
+                            <div class="checkbox"><label><input type="checkbox" class="layer" name="overLayers" id="cultural" data-id="Cultural" data-layer="data3" ><img src='img/cult.png' width='24' height='24'>&nbsp;&nbsp;Cultural</label></div>
+                            <div class="checkbox"><label><input type="checkbox" class="layer" name="overLayers" id="fire" data-id="Fire" data-layer="data3" ><img src='img/fire.png' width='24' height='24'>&nbsp;&nbsp;Fire Department</label></div>
+                            <div class="checkbox"><label><input type="checkbox" class="layer" name="overLayers" id="government" data-id="Government" data-layer="data3" ><img src='img/gov-50.png' width='24' height='24'>&nbsp;&nbsp;Post Office</label></div>
+                            <div class="checkbox"><label><input type="checkbox" class="layer" name="overLayers" id="hospital" data-id="Hospital" data-layer="data3"><img src='img/hospital2.png' width='24' height='24'>&nbsp;&nbsp;Hospital - EMS</label></div>
+                            <div class="checkbox"><label><input type="checkbox" class="layer" name="overLayers" id="library" data-id="Library" data-layer="data3" ><img src='img/library.png' width='24' height='24'>&nbsp;&nbsp;Library</label></div>
+                            <div class="checkbox"><label><input type="checkbox" class="layer" name="overLayers" id="park" data-id="Park" data-layer="data3" ><img src='img/park3.png' width='24' height='24'>&nbsp;&nbsp;Park</label></div>
+                            <div class="checkbox"><label><input type="checkbox" class="layer" name="overLayers" id="police" data-id="Police" data-layer="data3" ><img src='img/police.png' width='24' height='24'>&nbsp;&nbsp;Police Department</label></div>
+                            <div class="checkbox"><label><input type="checkbox" class="layer" name="overLayers" id="shopping" data-id="Shopping Center" data-layer="data3" ><img src='img/mall.png' width='24' height='24'>&nbsp;&nbsp;Shopping Center</label></div>
+                            <div class="checkbox"><label><input type="checkbox" class="layer" name="overLayers" id="school" data-id="School" data-layer="data3" ><img src='img/school.png' width='24' height='24'>&nbsp;&nbsp;Schools (K-12)</label></div>
+                            <div class="checkbox"><label><input type="checkbox" class="layer" name="overLayers" id="university" data-id="College" data-layer="data3" ><img src='img/university2.png' width='24' height='24'>&nbsp;&nbsp;University</label></div>
+                            
+					</div><!-- .panel-body -->
+	            </div><!-- #overlay-layers .panel-collapse collapse in -->
+			</div><!-- .panel panel-primary -->
+                          
+            
+<!--
+            <div class="panel-group"  id="accordian" style="margin:10px 0px 0px 0px;">
+                <div class="panel body"style="border-color:black;">
+                    <div class="panel-heading"style=" background-color: rgb(0,120,174); ">
+                        <a data-toggle="collapse" data-parent="#accordion_" href="#infosidebar">
+                            <span style="color:white"><b>Information</b><em> (click road or icon)</em></span><br>
+                        </a>
+                    </div>
+                    <div id="infosidebar" style="margin-left:10px"></div>
+                </div>
+            </div>
+-->
+        </div><!-- #Sidebar (Entire Sidebar) -->
+    </div><!-- #Container --> 
+    
+    <div class="modal fade" id="legendModal">
+        <div class="modal-dialog" style="width:900px">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button class="close" aria-hidden="true" data-dismiss="modal" type="button" style="color:white;">×</button>
+                    <h4 class="modal-title">Legend</h4>
+                </div>
+                <div class="modal-body" style="padding-top:0px;">
+                    <h3 style="color:#0078ae;">Bikeability Scores</h3>
+							<h4 style="margin-top:20px">Major Roads</h4>
+							 
+							<div class="media">
+								<a class="pull-left" href="#">
+									<img class="media-object" src="img/excellent.png"style="height:13px;width:63px; margin-top:2px">
+								</a>
+								<div class="media-body">
+									<h5 style="margin-bottom: 0px;margin-top:2px;"><b>Excellent -- </b>These road segments are generally comfortable to bike along (BLOS grades A and B)</h5>
+								</div>
+							</div>
+							
+							<div class="media">
+								<a class="pull-left" href="#">
+									<img class="media-object" src="img/fair.png"style="height:13px;width:63px; margin-top:12px">
+								</a>
+								<div class="media-body">
+                                    <h5 style="margin-bottom: 0px"><b>Fair -- </b>These road segments may present some issues, depending on your experience level (BLOS grades C and D)</h5>  
+									
+								</div>
+							</div>
+							
+							<div class="media">
+								<a class="pull-left" href="#">
+									<img class="media-object" src="img/unsafe.png"style="height:13px;width:63px; margin-top:12px">
+								</a>
+								<div class="media-body">
+									<h5 style="margin-bottom: 0px"><b>Unfavorable -- </b>These road segments are generally not comfortable to bike along (BLOS grades E and F)</h5>  
+								</div>
+							</div>
+							
+							<div class="media">
+								<a class="pull-left" href="#">
+									<img class="media-object" src="img/unbikeable.png"style="height:13px;width:63px; margin-top:12px">
+								</a>
+								<div class="media-body">
+									<h5 style="margin-bottom: 0px"><b>Unbikeable -- </b>Roadways on which bicycles cannot travel (limited access highways, highway access ramps and other selected “hazardous” routes)</h5>
+								</div>
+							</div>
+					 
+							<h4 style="margin-top: 25px">Minor Roads</h4>
+						   
+							<div class="media">
+								<a class="pull-left" href="#">
+									<img class="media-object" src="img/localAx.png"style="height:13px;width:63px; margin-top:2px">
+								</a>
+								<div class="media-body">
+									<h5 style="margin-bottom:0px;margin-top:2px;"><b>Favorable -- </b>These road segments are generally comfortable to bike along (BLOS grades A, B, or C)</h5>
+									
+								</div>
+							</div>
+						
+							<div class="media">
+								<a class="pull-left" href="#">
+									<img class="media-object" src="img/localD.png"style="height:13px;width:63px; margin-top:12px">
+								</a>
+								<div class="media-body">
+									<h5 style="margin-bottom:0px"><b>Unfavorable -- </b>These road segments are generally not comfortable to bike along (BLOS grades D, E, or F)</h5>
+                                </div>
+				            </div>
+                            <hr>
+                            <div class="media">
+                                <a class="pull-left" href="#">
+                                    <img class="media-object" src="img/trails.png"style="height:13px;width:63px; margin-top:5px">
+                                </a>
+                                <div class="media-body">
+                                    <h5 style="margin-top:5px"><b>Bikeable Mercer County Trails -- </b>These lines represent existing trails throughout Mercer County where bicycles are encouraged or permitted, and where the surface is rideable by any type of bike, including road bikes.</h5>
+                                </div>
+                            </div>
+                            <div class="media">
+                                <a class="pull-left" href="#">
+                                    <img class="media-object" src="img/gb_legend.png"style="margin-top:2px">
+                                </a>
+                            </div>
+                </div>
+            </div>
+        </div>
+    </div>
+      
+    <div class="modal fade" id="aboutDownload">
+        <div class="modal-dialog" style="width:620px">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button class="close" aria-hidden="true" data-dismiss="modal" type="button" style="color:white;">×</button>
+                    <h4 class="modal-title">Mercer County Bikeability Dataset</h4>
+                </div>
+                <div class="modal-body">
+                    <p>
+                        This dataset is an effort to approximate how comfortable roads within Mercer County, New Jersey, are to bike on, for the average bicyclist. It was created by first calculating Bicycle Level of Service (BLOS) ratings for 
+                        every road segment in the county using GIS data, and then by “crowdsourcing” corrections to these ratings via a webmap interface. The final ratings are simplified into three “bikeability” categories: Excellent (BLOS A+B), Fair 
+                        (BLOS C+D), and Unfavorable (BLOS E+F).
+                    </p>
+                    <hr 75%=""></hr>
+                    <li class="download-left">
+                        <a class="downloadShape" href="Data/Shapefile.zip"><i class="glyphicon glyphicon-download-alt" style="margin-bottom:10px"></i>&nbsp;Shapefile <small style="opacity:0.6"> [5 MB zip] </small></a>
+                    </li>
+                    <li class="download-left">
+                        <a class="downloadShape" href="Data/GeoJSON.zip"><i class="glyphicon glyphicon-download-alt" style="margin-bottom:10px"></i>&nbsp;GeoJSON <small style="opacity:0.6"> [6 MB zip] </small></a>
+                    </li>
+                    <li class="download-left">
+                        <a class="downloadShape" href="Data/Excel.zip"><i class="glyphicon glyphicon-download-alt" style="margin-bottom:10px"></i>&nbsp;CSV<small style="opacity:0.6"> [1.2 MB zip] </small></a>
+                    </li>
+                    <hr 75%=""></hr>
+                </div>
+            </div>
+        </div>  
+    </div>
+      
+    <div class="modal fade" id="aboutModal">
+        <div class="modal-dialog"style="width:620px">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button class="close" aria-hidden="true" data-dismiss="modal" type="button" style="color:white;">×</button>
+                     <h4 class="modal-title">Mercer County Bikeability Map</h4>
+                </div>
+                <div class="modal-body">
+                    <ul id="aboutTabs" class="nav nav-tabs">
+                        <li class="active"><a href="#about" data-toggle="tab"><i class="icon-road"></i>&nbsp;About</a></li>
+                        <li><a href="#purpose" data-toggle="tab"><i class="glyphicon glyphicon-ok-circle"></i>&nbsp;Purpose</a></li>   
+						<li><a href="#use" data-toggle="tab"><i class="icon-question-sign"></i>&nbsp;How to Use</a></li>
+						<li><a href="#contact" data-toggle="tab"><i class="icon-envelope"></i>&nbsp;Contact</a></li> 						 
+						<li><a href="#disclaimer" data-toggle="tab"><i class="icon-exclamation-sign"></i>&nbsp;Disclaimer</a></li>
+                    </ul>
+                    <div id="aboutTabsContent" class="tab-content" style="padding-top: 10px;">
+                        <div class="tab-pane fade active in" id="about">
+							<h3>What is Bikeability?</h3>
+                            <p>
+                                Bikeability is an estimate of how comfortable it is to bike along a roadway, and considers many factors, including traffic volumes, traffic speeds, pavement widths, and whether there is a usable shoulder. In         
+                                cooperation with Mercer County, DVRPC staff calculated Bikeability Scores for Mercer County roadways using the Bicycle Level of Service (BLOS) model, which generates a BLOS grade for any roadway based on the above 
+                                factors (and others). For details on the BLOS model and our method of analysis for the scores you see on the Mercer County Bikeability Map, please click <a href="pdf/process.pdf">here</a> to download an excerpt of a 
+                                project memo that describes this process. After the initial scores were calculated, comments were submitted by site visitors to help improve the accuracy of the Bikeability Scores. Many of the scores you see on the 
+                                site now have been adjusted based on these comments.
+                            </p>
+                        </div>
+                        
+                        <div class="tab-pane fade" id="purpose">
+                            <p>
+                                This site is intended to be a resource for Mercer County residents and bicyclists to help them plan bicycle-friendly routes to ride, and also to help planners identify priority bicycle corridors and facilities to be 
+                                considered in the future. We hope comments will help us improve the bikeability scores shown on the site, develop an effective route planning tool for cyclists, and provide information for agencies with jurisdiction 
+                                over particular roads that will help them improve conditions for cyclists. Please note that particular roadways are owned and maintained by the State of New Jersey, the County of Mercer, and various municipalities. 
+                                Planning, designing, funding, and constructing roadway improvements is a long and expensive process. We hope that the information gathered here will influence policy and project priorities for all relevant agencies; it  
+                                is particularly relevant to the development of the Mercer County long-range transportation master plan. During this site's comment period, many site visitors suggested priority bike routes or corridors; these have been 
+                                shared with planners preparing the new bicyle master plan for Mercer County.
+                            </p>			
+						</div>
+                    		 
+						<div class="tab-pane fade" id="use">
+							<p>
+				                On the bottom right of the map are zoom and pan/drag controls for moving around. The toolbar on the right displays visible data layers -- by clicking the symbol or label, will turn them on or off. Layers include bikeability scores for major and minor roads, off-road bikeable trails, places/attractors.  Clicking on a "place" (within the map) will display that place's name, and type. <br> In the top right corner, we've provided a drop-down menu for each municipality within Mercer County <br> (<i class="glyphicon glyphicon-globe" style="color:black"></i>&nbsp;&nbsp;Zoom to). Selecting a municipality will "zoom to" that specified area. 
+							</p>			
+						</div>
+					
+						<div class="tab-pane fade" id="contact">
+							<p>
+								<strong>Gregory Krykewycz</strong>
+								<br/>
+									Manager 
+								<br/>
+									Office of Transit, Bicycle, and Pedestrian Planning
+								<br/>
+									Phone: 215-238-2945 
+								<br/>
+								<a class="one" href="mailto:gkrykewycz@dvrpc.org">gkrykewycz@dvrpc.org </a> 
+							</p>					
+						</div>
+                        
+                        <div class="tab-pane fade" id="disclaimer">
+                            <p>
+                                The bikeability grades and other bicycle-related information on this map are in no way an endorsement or recommendation of a particular roadway for bicycling nor are they an indication that a roadway is intended for 
+                                use by bicyclists. Rather, the ratings are a quantified trip planning tool for the individual adult bicyclist in the selection of roads meeting his or her experience, skill, and comfort levels. Potential hazards and 
+                                obstructions may exist on the routes shown, and Mercer County and other relevant maintaining agencies in no way warrant the safety or fitness of the suggested routes. This map does not expand the liability of Mercer 
+                                County and the other maintaining agencies beyond existing law. The user of this map bears full responsibility for his or her safety.
+                            </p>
+                            <p style="color:#666666">
+                                The Delaware Valley Regional Planning Commission (DVRPC) fully complies with Title VI of the Civil Rights Act of 1964, the Civil Rights Restoration Act of 1987, Executive Order 12898 on Environmental Justice, and 
+                                related nondiscrimination statutes and regulations in all programs and activities. DVRPC’s website, www.dvrpc.org, may be translated into multiple languages. Publications and other public documents can be made 
+                                available in alternative languages and formats, if requested. DVRPC public meetings are always held in ADA-accessible facilities and in transit-accessible locations when possible. Auxiliary services can be provided to 
+                                individuals who submit a request at least seven days prior to a meeting. Requests made within seven days will be accommodated to the greatest extent possible. Any person who believes they have been aggrieved by an 
+                                unlawful discriminatory practice by DVRPC under Title VI has a right to file a formal complaint. Any such complaint may be in writing and filed with DVRPC’s Title VI Compliance Manager and/or the appropriate state or 
+                                federal agency within 180 days of the alleged discriminatory occurrence. For more information on DVRPC’s Title VI program, or to obtain a Title VI Complaint Form, please call (215) 592-1800 or email 
+                                <a href="mailto:public_affairs@dvrpc.org" target="_top">public_affairs@dvrpc.org</a>.
+                            </p>	
+                        </div>
+                        
+					</div><!-- /#aboutTabsContent .tab-content -->
+                </div><!-- /.modal-body -->
+            </div><!-- /.modal-content -->
+        </div><!-- /.modal-dialog -->
+    </div><!-- /.modal -->
+    <script type="text/javascript" src="http://code.jquery.com/jquery-1.10.2.min.js"></script>
+    <script type="text/javascript" src="http://netdna.bootstrapcdn.com/bootstrap/3.0.0/js/bootstrap.min.js"></script>
+    <script src="https://maps.googleapis.com/maps/api/js?v=3.exp"></script> 
+	<script type="text/javascript" src="js/keydragzoom.js"></script>   
+	<script type="text/javascript" src="js/numeral.js"></script>   
+    <script type="text/javascript" src="js/main.js"></script>
+
+    
+  </body>
+</html>
